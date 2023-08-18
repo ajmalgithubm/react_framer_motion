@@ -1,11 +1,24 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-
+import { motion, AnimatePresence } from 'framer-motion'
+import { useLocation } from 'react-router-dom'
 
 function Home() {
+  const Routevarients = {
+    initial:{
+      y:'100vh'
+    },
+    final:{
+      y:'0vh',
+      transition:{
+        type:"spring",
+        mass:0.5
+      }
+    }
+  }
   return (
-    <div className="home component">
+    <motion.div variants={Routevarients} initial='initial' animate='final' className="home component">
       <h1>Home Component</h1>
-    </div>
+    </motion.div>
   )
 }
 
@@ -25,32 +38,79 @@ function Header() {
 }
 
 function About() {
+
+  const RouteVarients = {
+    initial:{
+      y:"100vh"
+    },
+    final:{
+      y:"0vh",
+      transition:{
+        type:"spring",
+        mass:0.5
+      }
+    }
+  }
   return (
-    <div className="about component">
+    <motion.div className="about component" variants={RouteVarients} initial='initial' animate='final'>
       <h1>About Component</h1>
-    </div>
+    </motion.div>
   )
 }
 
 function Contact() {
+  const RouteVarients = {
+    initial:{
+      opacity:0
+    },
+    final:{
+      opacity:[0, 0.5, 1],
+      transition:{
+        type:'bezier',
+        ease: [0.17, 0.67, 0.83, 0.67],
+        duration:0.5,
+       
+      }
+    }
+  }
   return (
-    <div className="contact component">
+    <motion.div className="contact component" variants={RouteVarients} initial='initial' animate='final'>
       <h1>Contact Component</h1>
-    </div>
+    </motion.div>
+  )
+}
+
+function LocationProvider({ children }) {
+  return (
+    <AnimatePresence>
+      {children}
+    </AnimatePresence>
+  )
+}
+
+function RoutesWithAnimations() {
+  const location = useLocation();
+  console.log(location);
+  return (
+    <Routes location={location} key={location.key}>
+      <Route path='/' element={<Home />} />
+      <Route path='/about' element={<About />} />
+      <Route path='/contact' element={<Contact />} />
+    </Routes>
   )
 }
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="App">
-        <Header />
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/about' element={<About/>}/>
-          <Route path='/contact' element={<Contact/>}/>
-        </Routes>
-      </div>
+      <AnimatePresence>
+        <div className="App">
+          <Header />
+          <LocationProvider>
+            <RoutesWithAnimations />
+          </LocationProvider>
+        </div>
+      </AnimatePresence>
     </BrowserRouter>
   );
 }
